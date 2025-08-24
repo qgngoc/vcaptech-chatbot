@@ -1,0 +1,51 @@
+version: '3.12'
+
+services:
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    container_name: agenticrag-mongodb
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    volumes:
+      - ./data/mount/mongo-storage:/data/db
+    networks:
+      - agenticrag-network
+
+  qdrant:
+    container_name: agenticrag-qdrant
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./data/mount/qdrant_storage:/qdrant/storage
+    networks:
+      - agenticrag-network
+
+  agenticrag:
+    container_name: agenticrag-app
+    image: agenticrag
+    ports:
+      - "8000:8000"
+    environment:
+      - QDRANT_URL=${QDRANT_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - QDRANT_COLLECTION_NAME=${QDRANT_COLLECTION_NAME}
+      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_NAME=${MONGODB_NAME}
+      - OPENAI_EMBEDDING_MODEL=${OPENAI_EMBEDDING_MODEL}
+    depends_on:
+      - qdrant
+      - mongodb
+    volumes:
+      - ./src:/src
+      - ./data/test:/data/test
+    networks:
+      - agenticrag-network
+
+
+networks:
+  agenticrag-network:
+    driver: bridge
+
