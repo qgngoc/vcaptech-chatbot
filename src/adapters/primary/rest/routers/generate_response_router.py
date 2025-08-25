@@ -11,7 +11,7 @@ from infrastructure.di.container import generate_response_port
 
 router = APIRouter(
     # prefix="/generate_response",
-    tags=["generate_response"]
+    tags=["chat"]
 )
 
 
@@ -20,8 +20,8 @@ def get_generate_response_port() -> GenerateResponsePort:
     return generate_response_port
 
 
-@router.post("/generate_response")
-async def generate_response(
+@router.post("/chat")
+async def chat(
     rag_input: RAGInputSchema,
     generate_response_port: GenerateResponsePort = Depends(get_generate_response_port)
 ):
