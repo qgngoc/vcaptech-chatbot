@@ -71,7 +71,7 @@
 
 Please checkout `API Documentations.md` to get more details of those APIs.
 
-# Evaluation
+## Evaluation
    Note: The service must be deployed by Docker to run the evaluation script.
    
    Run retrieval evaluation scripts:
