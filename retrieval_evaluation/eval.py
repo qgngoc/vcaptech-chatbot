@@ -1,6 +1,7 @@
 
 import json
 import requests
+from tabulate import tabulate
 from fastapi.testclient import TestClient
 
 # from src.main import app
@@ -65,16 +66,21 @@ if __name__ == "__main__":
         json.dump(results, f, indent=4, ensure_ascii=False)
 
     # save statistics of citation match with each top k
-    with open('retrieval_evaluation/data/benchmark_stats.json', 'w') as f:
-        stats = {}
-        for top_k in TOP_KS:
-            stats[top_k] = {
-                "total": 0,
-                "matched": 0
-            }
-            for result in results:
-                if result['top_k'] == top_k:
-                    stats[top_k]['total'] += 1
-                    if result['citation_matched']:
-                        stats[top_k]['matched'] += 1
-        json.dump(stats, f, indent=4, ensure_ascii=False)
+    stats = {}
+    for top_k in TOP_KS:
+        stats[top_k] = {
+            "total": 0,
+            "matched": 0
+        }
+        for result in results:
+            if result['top_k'] == top_k:
+                stats[top_k]['total'] += 1
+                if result['citation_matched']:
+                    stats[top_k]['matched'] += 1
+
+    rows = [(k, v["total"], v["matched"]) for k, v in stats.items()]
+
+    table_str = tabulate(rows, headers=["Top K", "Total", "Hit"], tablefmt="grid")
+    # save to table.txt
+    with open('retrieval_evaluation/data/benchmark_result_stats.txt', 'w') as f:
+        f.write(table_str)
