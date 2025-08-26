@@ -1,1 +1,1 @@
-docker build --build-arg -t agenticrag src/
+docker build --build-arg ENV_FILE=.env.docker -t agenticrag src/

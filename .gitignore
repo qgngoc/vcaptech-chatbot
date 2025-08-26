@@ -102,7 +102,7 @@ alembic/versions/*.pyc
 logs/
 *.log
 
-qdrant_storage/
+# qdrant_storage/
 .gradio/
 
-mount/
+mongo-storage/
