@@ -13,6 +13,7 @@
    - Copy the `.env` and `env.docker` files with your credentials (Replace your OpenAI API Key only).
 
 3. **Start the services:**
+   
     Note: In order to deply these smoothly, all sudo permission must be granted to this directory. Command to grant permission: `sudo chmod -R 777 ./`
 
    ```bash
@@ -30,7 +31,7 @@
    python main.py
    ```
 
-4. **Run usecases**
+5. **Run usecases**
 
    API `/health`:
    ```
