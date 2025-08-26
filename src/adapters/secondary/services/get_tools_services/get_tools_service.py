@@ -15,7 +15,7 @@ class GetToolsServiceImpl(GetToolsService):
     def get_tools(self, embedding_service: EmbeddingService, retrieve_service: RetrieveService, client: Client, rag_config: RagConfig) -> list[Tool]:
         """Retrieve tools for a client based on the provided RAG configuration."""
         def search_local_knowledge_base(query: str) -> list[Document]:
-            """Search the local knowledge base to get the most relevant information to the query."""
+            """Search the local knowledge base about Settle3's licenses, support documents and CPT to get the most relevant information to the query."""
             try:
                 vector = embedding_service.create_embedding(query)
                 response = retrieve_service.retrieve(

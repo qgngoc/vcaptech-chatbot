@@ -1,1 +1,1 @@
-docker build -t agenticrag src/
+docker build --build-arg -t agenticrag src/

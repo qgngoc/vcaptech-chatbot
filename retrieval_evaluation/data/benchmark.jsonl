@@ -1,0 +1,8 @@
+{"question": "What kind of program is Settle3?", "gold_answer": "Settle3 is a 3-dimensional program for the analysis of vertical settlement and consolidation under surface loads such as foundations, embankments, and excavations.", "context_source": "data/test/inputs/1.md"}
+{"question": "How are groundwater levels specified in Settle3?", "gold_answer": "Groundwater levels can be specified with piezo lines or a water grid, and can also be staged.", "context_source": "data/test/inputs/1.md"}
+{"question": "What CPT input parameters are required for interpretation?", "gold_answer": "The required inputs are cone resistance (qₙ), sleeve resistance (fₛ), and pore pressure (u₂).", "context_source": "data/test/inputs/2.md"}
+{"question": "In which formats are CPT interpretation results available?", "gold_answer": "They are available in both graphical and tabular formats.", "context_source": "data/test/inputs/2.md"}
+{"question": "What are the two default tabs in the CPT results display?", "gold_answer": "Inputs and Results.", "context_source": "data/test/inputs/3.md"}
+{"question": "How many graphs can be displayed simultaneously in the CPT results tab?", "gold_answer": "Up to 5 graphs can be displayed simultaneously.", "context_source": "data/test/inputs/3.md"}
+{"question": "How quickly does Rocscience strive to respond to technical support queries?", "gold_answer": "Rocscience strives to respond within 24 hours, though this depends on complexity and support volume.", "context_source": "data/test/inputs/5.md"}
+{"question": "Can you move a Rocscience license without a Maintenance+ subscription?", "gold_answer": "No, moving a license is only available with an active Maintenance+ subscription.", "context_source": "data/test/inputs/4.md"}

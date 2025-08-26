@@ -70,7 +70,7 @@ class GenerateResponseUseCaseImpl(GenerateResponsePort):
 
         rag_response = RagResponse(
             answer=text,
-            citations=citations,
+            citations=all_citations,
             trace_id=trace_id,
         )
         return rag_response

@@ -61,7 +61,7 @@ class MarkdownChunkingServiceImpl(MarkdownChunkingService):
         subheading_pattern = r'^## (.*)$'
         return heading_pattern, subheading_pattern
     
-    def _structural_chunking(self, page_content: PageContent, max_chars_in_chunk: int = 2048) -> list[MarkdownSection]:
+    def _structural_chunking(self, page_content: PageContent, max_chars_in_chunk: int = 99999) -> list[MarkdownSection]:
         """Chunk Markdown text into sections based on headings."""
         md_text = page_content.content
         heading_pattern, subheading_pattern = self._extract_heading_pattern(md_text)

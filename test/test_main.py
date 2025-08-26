@@ -1,5 +1,5 @@
 import pytest
-from httpx import AsyncClient
+from fastapi.testclient import TestClient
 from src.main import app
 
 
@@ -9,7 +9,7 @@ def verify_response(response, expected_status, expected_json):
 
 @pytest.mark.asyncio
 async def test_read_root():
-    async with AsyncClient(app=app) as ac:
-        response = await ac.get("/health")
-    assert verify_response(response, 200, {"status": "ok"})
+    client = TestClient(app=app)
+    response = client.get("/health")
+    verify_response(response, 200, {"status": "ok"})
 

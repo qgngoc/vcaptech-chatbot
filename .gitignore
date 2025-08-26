@@ -93,6 +93,7 @@ $RECYCLE.BIN/
 # Python virtual environment
 venv/
 .env
+.env.docker
 
 # FastAPI
 alembic/versions/*.pyc
