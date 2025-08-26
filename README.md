@@ -5,7 +5,7 @@
 ### Setup
 1. **Clone the repository:**
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/qgngoc/vcaptech-chatbot
    cd vcaptech-chatbot
    ```
 
@@ -18,6 +18,16 @@
    ```bash
    sh build.sh
    docker compose --env-file .env.docker up -d
+   ```
+3.1 **Or Start the services locally:**
+   - Install the requirements:
+   ```bash
+   pip install -r src/requirements.txt
+   ```
+   - Run service:
+   ```bash
+   cd src/
+   python main.py
    ```
 
 4. **Run usecases**
