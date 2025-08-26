@@ -19,7 +19,7 @@
    sh build.sh
    docker compose --env-file .env.docker up -d
    ```
-3.1 **Or Start the services locally:**
+   **Or Start the services locally:**
    - Install the requirements:
    ```bash
    pip install -r src/requirements.txt
