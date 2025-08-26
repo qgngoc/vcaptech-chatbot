@@ -17,6 +17,11 @@ from core.entities import (
     CsvReadFileConfig
 )
 
+from infrastructure.utils.prompts import (
+    AGENTIC_RAG_SYSTEM_PROMPT,
+    INPUT_RAIL_SYSTEM_PROMPT
+)
+
 from adapters.secondary.services.file_reading_services import (
     CSVFileReadingServiceImpl,
     DocxFileReadingServiceImpl,
@@ -133,7 +138,9 @@ generate_response_port = GenerateResponseUseCaseImpl(
     get_tools_service=get_tools_service,
     get_citations_service=get_citations_service,
     tool_call_handling_service=tool_call_handling_service,
-    logs_repository=mongodb_logs_repository
+    logs_repository=mongodb_logs_repository,
+    agent_system_prompt=AGENTIC_RAG_SYSTEM_PROMPT,
+    input_rail_system_prompt=INPUT_RAIL_SYSTEM_PROMPT
 )
 
 get_llm_configs_port = GetLLMConfigsUseCaseImpl(

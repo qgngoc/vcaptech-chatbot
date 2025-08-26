@@ -40,7 +40,7 @@ async def chat(
             client=rag_input.client,
             rag_config=rag_input.rag_config
         )
-        rag_output = RAGOutputSchema(answer=rag_response.answer, citations=rag_response.citations, trace_id=rag_response.trace_id)
+        rag_output = RAGOutputSchema(blocked_by_input_rail=rag_response.blocked_by_input_rail, answer=rag_response.answer, citations=rag_response.citations, trace_id=rag_response.trace_id)
         return JSONResponse(content=rag_output.model_dump(), status_code=200)
     except Exception as e:
         logging.exception(f"Error generating response: {e}")

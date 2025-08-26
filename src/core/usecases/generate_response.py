@@ -4,7 +4,7 @@ import uuid
 from typing import Union, List
 
 from core.ports.primary.generate_response import GenerateResponsePort
-from core.entities import Message, RagConfig, Client, RagResponse, ToolCall, Tool, ToolCallResponse, Document, DocumentWithVector, Citation, TracingLog, GenerationLogContent, CalculationLogContent, RetrievalLogContent
+from core.entities import Message, RagConfig, Client, RagResponse, ToolCall, Tool, ToolCallResponse, Document, DocumentWithVector, Citation, TracingLog, GenerationLogContent, CalculationLogContent, RetrievalLogContent, LLMConfig
 
 from core.ports.secondary.services import LLMService, EmbeddingService, GetRetrieveToolsService, GetCitationsService, ToolCallHandlingService, RetrieveService, GetToolsService
 from core.ports.secondary.repositories import LogsRepository
@@ -13,7 +13,7 @@ class GenerateResponseUseCaseImpl(GenerateResponsePort):
     """Implementation of the use case for generating responses using LLMs."""
     MAX_ITERATIONS = 5
 
-    def __init__(self, llm_service: LLMService, embedding_service: EmbeddingService, retrieval_service: RetrieveService, get_tools_service: GetToolsService, get_citations_service: GetCitationsService, tool_call_handling_service: ToolCallHandlingService, logs_repository: LogsRepository):
+    def __init__(self, llm_service: LLMService, embedding_service: EmbeddingService, retrieval_service: RetrieveService, get_tools_service: GetToolsService, get_citations_service: GetCitationsService, tool_call_handling_service: ToolCallHandlingService, logs_repository: LogsRepository, agent_system_prompt: str, input_rail_system_prompt: str):
         """ Initialize the GenerateResponseUseCaseImpl with necessary services."""
         self.llm_service = llm_service
         self.embedding_service = embedding_service
@@ -23,6 +23,8 @@ class GenerateResponseUseCaseImpl(GenerateResponsePort):
         self.tool_call_handling_service = tool_call_handling_service
         self.logs_repository = logs_repository
         self.retrieve_tool_names = self.get_tools_service.get_retrieve_tool_names()
+        self.agent_system_prompt = agent_system_prompt
+        self.input_rail_system_prompt = input_rail_system_prompt
         self.max_iterations = self.MAX_ITERATIONS  # Maximum number of iterations for the RAG process
 
 
@@ -39,7 +41,19 @@ class GenerateResponseUseCaseImpl(GenerateResponsePort):
             RagResponse: The response object containing the generated output and status.
         """
         trace_id = str(uuid.uuid4())
+        blocked_by_input_rail = self._checking_input_rails(conversation_messages=messages, llm_config=rag_config.llm_config, trace_id=trace_id)
+
+        if blocked_by_input_rail:
+            return RagResponse(
+                blocked_by_input_rail=True,
+                trace_id=trace_id,
+                answer=None,
+                citations=[],
+            )
+
         tools = self.get_tools_service.get_tools(self.embedding_service, self.retrieval_service, client, rag_config)
+        if messages[0].role != "system":
+            messages.insert(0, Message(role="system", content=self.agent_system_prompt))
         all_citations = []
         for i in range(self.max_iterations):
             llm_completion = self.llm_service.chat(llm_config=rag_config.llm_config, messages=messages, tools=tools)
@@ -70,6 +84,7 @@ class GenerateResponseUseCaseImpl(GenerateResponsePort):
 
         rag_response = RagResponse(
             answer=text,
+            blocked_by_input_rail=blocked_by_input_rail,
             citations=all_citations,
             trace_id=trace_id,
         )
@@ -136,3 +151,23 @@ class GenerateResponseUseCaseImpl(GenerateResponsePort):
             )
             self.logs_repository.insert_log(tracing_log)
         return tool_call_response, all_citations
+    
+
+    def _checking_input_rails(self, conversation_messages: list[Message], llm_config: LLMConfig, trace_id: str) -> bool:
+        last_message = conversation_messages[-1].content
+        messages = [Message(role="system", content=self.input_rail_system_prompt), Message(role="user", content=f"The message: {last_message}\n.Does the message violate any policies?\nAnswer yes or no. Do not provide any explanation.")]
+
+        llm_completion = self.llm_service.chat(messages=messages, llm_config=llm_config)
+        if not llm_completion.text:
+            raise Exception("No response from LLM")
+        tracing_log = TracingLog(
+            id=str(uuid.uuid4()),
+            trace_id=trace_id,
+            type="generation",
+            content=GenerationLogContent(
+                messages=messages,
+                response=llm_completion.text
+            )
+        )
+        self.logs_repository.insert_log(tracing_log)
+        return "yes" in llm_completion.text.lower()

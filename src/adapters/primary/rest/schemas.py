@@ -13,7 +13,8 @@ class RAGInputSchema(BaseModel):
 
 class RAGOutputSchema(BaseModel):
     """Schema for the output of a RAG operation."""
-    answer: str = Field(..., description="The generated answer from the RAG operation.")
+    blocked_by_input_rail: bool = Field(False, description="Indicates if the response was blocked by input rails.")
+    answer: Union[str, None] = Field(None, description="The generated answer from the RAG operation.")
     citations: Optional[List[Citation]] = Field(
         None, 
         description="List of citations used to generate the answer. Each citation includes file name, path, page number, and content."
